@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: banco-de-questoes-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
+
+staticSites:
+  - name: banco-de-questoes-frontend
+    buildCommand: ""
+    staticPublishPath: frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
