@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Questões da Disciplina</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>Banco de Questões</header>
+
+    <div class="container">
+        <h1 id="titulo"></h1>
+
+        <div id="lista"></div>
+
+        <button id="btn-exportar">Exportar esta disciplina (CSV)</button>
+        <button onclick="window.location.href='selecionar_disciplina.html'">Voltar</button>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/listar_questoes.js"></script>
+
+    <script>
+        // Atualiza o título
+        const disciplina = new URLSearchParams(window.location.search).get("disciplina");
+        document.getElementById("titulo").textContent = disciplina
+            ? `Disciplina: ${disciplina}`
+            : "Todas as disciplinas";
+
+        // Botão de exportar CSV
+        document.getElementById("btn-exportar").onclick = () => {
+            window.location.href = `http://127.0.0.1:5000/exportar?disciplina=${encodeURIComponent(disciplina)}`;
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Área Administrativa - Banco de Questões</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>Banco de Questões</header>
+
+<div class="container">
+
+    <h1>Área Administrativa</h1>
+    <p>Gerencie todas as questões cadastradas no sistema.</p>
+
+    <button onclick="carregarTodas()">Listar Todas as Questões</button>
+    <button onclick="novaQuestao()">Adicionar Nova Questão</button>
+    <button onclick="window.location.href='../usuario/selecionar_disciplina.html'">Área de Professores</button>
+    <button onclick="exportarCSV()">Exportar Todas Questões (CSV)</button>
+
+    <br><br>
+
+    <!-- FORMULÁRIO DE CRIAÇÃO / EDIÇÃO -->
+    <div id="formDiv" style="display:none;">
+        <h2 id="formTitulo">Adicionar Questão</h2>
+
+        <label>Enunciado:</label>
+        <textarea id="enunciado"></textarea>
+
+        <label>Alternativa A:</label>
+        <input id="altA">
+
+        <label>Alternativa B:</label>
+        <input id="altB">
+
+        <label>Alternativa C:</label>
+        <input id="altC">
+
+        <label>Alternativa D:</label>
+        <input id="altD">
+
+        <label>Correta (A/B/C/D):</label>
+        <input id="correta" maxlength="1">
+
+        <label>Disciplina:</label>
+        <select id="disciplina">
+            <option value="Português">Português</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Química">Química</option>
+            <option value="Física">Física</option>
+            <option value="Biologia">Biologia</option>
+            <option value="Geografia">Geografia</option>
+            <option value="História">História</option>
+        </select>
+
+        <label>Dificuldade:</label>
+        <select id="dificuldade">
+            <option value="Fácil">Fácil</option>
+            <option value="Médio">Médio</option>
+            <option value="Difícil">Difícil</option>
+        </select>
+
+        <br><br>
+        <button onclick="salvarQuestao()">Salvar</button>
+        <button onclick="cancelar()">Cancelar</button>
+
+        <br><br><hr>
+    </div>
+
+    <!-- LISTA DE QUESTÕES -->
+    <div id="lista"></div>
+
+</div>
+
+<script src="../js/api.js"></script>
+
+<script>
+let editandoId = null;
+
+/* =============================
+      EXPORTAR CSV
+   ============================= */
+function exportarCSV() {
+    window.location.href = "http://127.0.0.1:5000/exportar";
+}
+
+/* =============================
+      LISTAR TODAS AS QUESTÕES
+   ============================= */
+async function carregarTodas() {
+    const listaDiv = document.getElementById("lista");
+    listaDiv.innerHTML = "<p>Carregando...</p>";
+
+    try {
+        const questoes = await listarQuestoes(); // sem filtro → todas
+
+        if (questoes.length === 0) {
+            listaDiv.innerHTML = "<p>Nenhuma questão cadastrada.</p>";
+            return;
+        }
+
+        let html = "";
+        questoes.forEach(q => {
+            html += `
+                <div class="card">
+                    <h3>ID: ${q.id}</h3>
+                    <p><strong>Disciplina:</strong> ${q.disciplina}</p>
+                    <p><strong>Dificuldade:</strong> ${q.dificuldade}</p>
+                    <p><strong>Enunciado:</strong> ${q.enunciado}</p>
+
+                    <button onclick="editar(${q.id})">Editar</button>
+                    <button onclick="excluir(${q.id})" style="background:#a00;color:white;">Excluir</button>
+                </div>
+                <br>
+            `;
+        });
+
+        listaDiv.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        listaDiv.innerHTML = "<p>Erro ao carregar as questões.</p>";
+    }
+}
+
+/* =============================
+      NOVA QUESTÃO
+   ============================= */
+function novaQuestao() {
+    editandoId = null;
+    document.getElementById("formTitulo").innerText = "Adicionar Questão";
+    document.getElementById("formDiv").style.display = "block";
+
+    document.getElementById("enunciado").value = "";
+    document.getElementById("altA").value = "";
+    document.getElementById("altB").value = "";
+    document.getElementById("altC").value = "";
+    document.getElementById("altD").value = "";
+    document.getElementById("correta").value = "";
+    document.getElementById("disciplina").value = "Português";
+    document.getElementById("dificuldade").value = "Fácil";
+
+    // Scroll automático para o formulário
+    document.getElementById("formDiv").scrollIntoView({ behavior: "smooth" });
+}
+
+/* =============================
+      EDITAR QUESTÃO
+   ============================= */
+async function editar(id) {
+    const q = await buscarQuestao(id);
+
+    editandoId = id;
+    document.getElementById("formTitulo").innerText = "Editar Questão";
+    document.getElementById("formDiv").style.display = "block";
+
+    document.getElementById("enunciado").value = q.enunciado;
+    document.getElementById("altA").value = q.alternativa_a;
+    document.getElementById("altB").value = q.alternativa_b;
+    document.getElementById("altC").value = q.alternativa_c;
+    document.getElementById("altD").value = q.alternativa_d;
+    document.getElementById("correta").value = q.correta;
+    document.getElementById("disciplina").value = q.disciplina;
+    document.getElementById("dificuldade").value = q.dificuldade;
+
+    // Scroll automático para o formulário
+    document.getElementById("formDiv").scrollIntoView({ behavior: "smooth" });
+}
+
+/* =============================
+      SALVAR (CRIAR OU EDITAR)
+   ============================= */
+async function salvarQuestao() {
+    const questao = {
+        enunciado: document.getElementById("enunciado").value,
+        alternativa_a: document.getElementById("altA").value,
+        alternativa_b: document.getElementById("altB").value,
+        alternativa_c: document.getElementById("altC").value,
+        alternativa_d: document.getElementById("altD").value,
+        correta: document.getElementById("correta").value.toUpperCase(),
+        disciplina: document.getElementById("disciplina").value,
+        dificuldade: document.getElementById("dificuldade").value
+    };
+
+    if (editandoId === null) {
+        await criarQuestao(questao);
+        alert("Questão criada com sucesso!");
+    } else {
+        await editarQuestao(editandoId, questao);
+        alert("Questão atualizada!");
+    }
+
+    cancelar();
+    carregarTodas();
+}
+
+/* =============================
+      EXCLUIR QUESTÃO
+   ============================= */
+async function excluir(id) {
+    if (confirm("Deseja realmente excluir esta questão?")) {
+        await deletarQuestao(id);
+        carregarTodas();
+    }
+}
+
+/* =============================
+      CANCELAR FORMULÁRIO
+   ============================= */
+function cancelar() {
+    editandoId = null;
+    document.getElementById("formDiv").style.display = "none";
+}
+</script>
+
+</body>
+</html>

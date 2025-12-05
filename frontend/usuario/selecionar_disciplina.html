@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Banco de Questões - Professores</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>Banco de Questões</header>
+
+<div class="container">
+    <h1>Visualizar Questões por Disciplina</h1>
+
+    <label for="disciplina">Escolha a disciplina:</label>
+    <select id="disciplina">
+        <option value="">Selecione...</option>
+        <option value="Português">Português</option>
+        <option value="Matemática">Matemática</option>
+        <option value="Química">Química</option>
+        <option value="Física">Física</option>
+        <option value="Biologia">Biologia</option>
+        <option value="Geografia">Geografia</option>
+        <option value="História">História</option>
+    </select>
+
+    <button onclick="verQuestoes()">Ver Questões</button>
+
+    <br><br>
+
+    <button onclick="mostrarLoginAdmin()">Área Administrativa</button>
+
+    <!-- Login simples para admin -->
+    <div id="loginAdminContainer" style="display:none; margin-top:20px;">
+        <h3>Login Administrativo</h3>
+        <label>Usuário:</label>
+        <input type="text" id="usuarioAdmin">
+        <br>
+        <label>Senha:</label>
+        <input type="password" id="senhaAdmin">
+        <br>
+        <button onclick="verificarLoginAdmin()">Entrar</button>
+        <p id="mensagemAdmin" style="color:red;"></p>
+    </div>
+</div>
+
+<script>
+function verQuestoes() {
+    const d = document.getElementById("disciplina").value;
+
+    if (!d) {
+        alert("Selecione uma disciplina.");
+        return;
+    }
+
+    window.location.href = `listar_questoes.html?disciplina=${encodeURIComponent(d)}`;
+}
+
+// Exibe o formulário de login admin
+function mostrarLoginAdmin() {
+    document.getElementById("loginAdminContainer").style.display = "block";
+}
+
+// Verifica usuário e senha admin
+function verificarLoginAdmin() {
+    const usuario = document.getElementById("usuarioAdmin").value;
+    const senha = document.getElementById("senhaAdmin").value;
+    const mensagem = document.getElementById("mensagemAdmin");
+
+    if(usuario === "admin" && senha === "admin") {
+        // Login correto, redireciona para área administrativa
+        window.location.href = "../admin/index.html";
+    } else {
+        mensagem.textContent = "Usuário ou senha incorretos!";
+    }
+}
+</script>

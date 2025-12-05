@@ -1,0 +1,78 @@
+/* ====== ESTILO GLOBAL ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #f0f0f0;
+    color: #333;
+    padding-top: 80px;
+}
+
+/* ====== CABEÇALHO FIXO ====== */
+header {
+    width: 100%;
+    background: #2d2d2d;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+/* ====== CONTAINER CENTRAL ====== */
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ====== BOTÕES ====== */
+button {
+    background: #2d2d2d;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #444;
+}
+
+/* ====== INPUTS E SELECTS ====== */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+/* ====== CARDS DE QUESTÕES ====== */
+.questao-card {
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2d2d2d;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.05);
+}
